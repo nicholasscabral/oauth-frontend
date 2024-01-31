@@ -9,9 +9,9 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { Container } from "./styles";
 import { useState } from "react";
 import Button from "@/components/button";
+import { CenteredContainer } from "@/components/centeredContainer/styles";
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
@@ -22,13 +22,14 @@ export default function SignIn() {
   };
 
   return (
-    <Container>
+    <CenteredContainer>
       <CssBaseline />
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          width: "25%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "blue" }}>
@@ -73,7 +74,7 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link href="/reset-password" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
@@ -85,6 +86,6 @@ export default function SignIn() {
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </CenteredContainer>
   );
 }

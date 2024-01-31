@@ -20,28 +20,28 @@ const PasswordStrengthValidator: React.FC<PasswordStrengthValidatorProps> = ({
     <div>
       <h4>Passoword rules:</h4>
       <p>
-        Has Uppercase:{" "}
         <span style={{ color: hasUppercase ? "green" : "red" }}>
           {hasUppercase ? "✔" : "✘"}
-        </span>
+        </span>{" "}
+        Has Uppercase
       </p>
       <p>
-        Has Symbols:{" "}
         <span style={{ color: hasSymbols ? "green" : "red" }}>
           {hasSymbols ? "✔" : "✘"}
-        </span>
+        </span>{" "}
+        Has Symbols
       </p>
       <p>
-        Has Numbers:{" "}
         <span style={{ color: hasNumbers ? "green" : "red" }}>
           {hasNumbers ? "✔" : "✘"}
-        </span>
+        </span>{" "}
+        Has Numbers
       </p>
       <p>
-        Has over 10 chars:{" "}
         <span style={{ color: isLongEnough ? "green" : "red" }}>
           {isLongEnough ? "✔" : "✘"}
-        </span>
+        </span>{" "}
+        Has over 10 chars
       </p>
     </div>
   );

@@ -8,9 +8,9 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Typography from "@mui/material/Typography";
-import { Container } from "./styles";
 import Button from "@/components/button";
 import PasswordStrengthValidator from "@/components/passwordValidator";
+import { CenteredContainer } from "@/components/centeredContainer/styles";
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false);
@@ -25,13 +25,14 @@ export default function SignUp() {
   };
 
   return (
-    <Container>
+    <CenteredContainer>
       <CssBaseline />
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          width: "25%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "blue" }}>
@@ -84,6 +85,6 @@ export default function SignUp() {
           </Link>
         </Box>
       </Box>
-    </Container>
+    </CenteredContainer>
   );
 }

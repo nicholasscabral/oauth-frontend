@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "oauth-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-loading": "^2.0.3",
+    "react-toastify": "^10.0.4",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
