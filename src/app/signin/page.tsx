@@ -12,14 +12,24 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import Button from "@/components/button";
 import { CenteredContainer } from "@/components/centeredContainer/styles";
+import { SignInDto } from "@/common/dtos/signin";
+import { useSearchParams } from "next/navigation";
 
 export default function SignIn() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<SignInDto>({
+    email: searchParams.get("email") || "",
+    password: searchParams.get("password") || "",
+  });
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setInterval(() => setLoading(false), 2000);
   };
+
+  const handleInputChange = (e: any) =>
+    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   return (
     <CenteredContainer>
@@ -48,6 +58,8 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={data.email}
+            onChange={handleInputChange}
           />
           <TextField
             margin="normal"
@@ -57,7 +69,9 @@ export default function SignIn() {
             label="Password"
             type="password"
             id="password"
+            value={data.password}
             autoComplete="current-password"
+            onChange={handleInputChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

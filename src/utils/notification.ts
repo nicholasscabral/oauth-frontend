@@ -14,6 +14,6 @@ export class Notification {
       position: "top-center",
       theme: "colored",
       delay: 5000,
-    });
+    })
   }
 }

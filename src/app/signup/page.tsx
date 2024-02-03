@@ -11,17 +11,41 @@ import Typography from "@mui/material/Typography";
 import Button from "@/components/button";
 import PasswordStrengthValidator from "@/components/passwordValidator";
 import { CenteredContainer } from "@/components/centeredContainer/styles";
+import { type SignUpDto } from "@/common/dtos/signup";
+import UsersService from "@/services/users";
+import { Notification } from "@/utils/notification";
+
+const emptyData = {
+  email: "",
+  password: "",
+  passwordConfirm: "",
+};
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [data, setData] = useState<SignUpDto>(emptyData);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleInputChange = (e: any) =>
+    setData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
-    setInterval(() => setLoading(false), 2000);
+    try {
+      await UsersService.create(data);
+      Notification.info("Check your email inbox to verify your account");
+      setLoading(false);
+    } catch (e: any) {
+      Notification.error(
+        e?.response?.data?.error || "Something went wrong, please try again"
+      );
+      setLoading(false);
+      setData(emptyData);
+    }
   };
 
   return (
@@ -32,7 +56,7 @@ export default function SignUp() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "25%",
+          width: "40%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "blue" }}>
@@ -49,8 +73,8 @@ export default function SignUp() {
             id="email"
             label="Email Address"
             name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={data.email}
+            onChange={handleInputChange}
             autoFocus
             autoComplete="off"
           />
@@ -62,12 +86,37 @@ export default function SignUp() {
             label="Password"
             type="text"
             id="password"
-            value={password}
+            value={data.password}
             autoComplete="off"
-            onChange={(e) => setPassword(e.target.value)}
+            onCopy={(e) => {
+              e.preventDefault();
+            }}
+            onPaste={(e) => {
+              e.preventDefault();
+            }}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="passwordConfirm"
+            label="Password Confirmation"
+            type="text"
+            id="password"
+            value={data.passwordConfirm}
+            autoComplete="off"
+            onCopy={(e) => {
+              e.preventDefault();
+            }}
+            onPaste={(e) => {
+              e.preventDefault();
+            }}
+            onChange={handleInputChange}
           />
           <PasswordStrengthValidator
-            password={password}
+            password={data.password}
+            passwordConfirm={data.passwordConfirm}
             onValidate={setIsPasswordValid}
           />
           <Button
@@ -75,7 +124,7 @@ export default function SignUp() {
             fullWidth
             variant="contained"
             loading={loading}
-            disabled={!isPasswordValid || !password || !email}
+            disabled={!isPasswordValid || !data.password || !data.email}
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up

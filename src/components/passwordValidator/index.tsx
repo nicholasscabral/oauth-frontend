@@ -2,19 +2,24 @@ import React from "react";
 
 interface PasswordStrengthValidatorProps {
   password: string;
+  passwordConfirm?: string;
   onValidate: (isValid: boolean) => void;
 }
 
 const PasswordStrengthValidator: React.FC<PasswordStrengthValidatorProps> = ({
   password,
+  passwordConfirm,
   onValidate,
 }) => {
   const hasUppercase = /[A-Z]/.test(password);
   const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password);
   const hasNumbers = /\d/.test(password);
   const isLongEnough = password.length >= 10;
+  const passwordsMatch = password !== "" && password === passwordConfirm;
 
-  onValidate(hasUppercase && hasSymbols && hasNumbers && isLongEnough);
+  onValidate(
+    hasUppercase && hasSymbols && hasNumbers && isLongEnough && passwordsMatch
+  );
 
   return (
     <div>
@@ -42,6 +47,12 @@ const PasswordStrengthValidator: React.FC<PasswordStrengthValidatorProps> = ({
           {isLongEnough ? "✔" : "✘"}
         </span>{" "}
         Has over 10 chars
+      </p>
+      <p>
+        <span style={{ color: passwordsMatch ? "green" : "red" }}>
+          {passwordsMatch ? "✔" : "✘"}
+        </span>{" "}
+        Passwords match
       </p>
     </div>
   );
