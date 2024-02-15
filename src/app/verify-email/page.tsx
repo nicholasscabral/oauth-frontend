@@ -1,11 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Container, Typography, makeStyles } from "@material-ui/core";
+import { Container, Typography, makeStyles } from "@material-ui/core";
 import { CheckCircleOutline, ErrorOutline } from "@material-ui/icons";
 import { Link } from "@mui/material";
 import { EmailVerificationService } from "@/services/email-verification";
 import { Notification } from "@/utils/notification";
+import Button from "@/components/button";
+
+const TWENTY_SECONDS: number = 20;
+const TWENTY_SECONDS_IN_MS: number = 20 * 1000;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,7 +27,10 @@ const useStyles = makeStyles((theme) => ({
 
 const EmailVerificationPage = () => {
   const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const [loading, setLoading] = useState(false);
   const [tokenIsValid, setTokenIsValid] = useState<boolean | null>(null);
+  const [cooldown, setCooldown] = useState(0); // Initial cooldown value
   const classes = useStyles();
 
   useEffect(() => {
@@ -44,9 +51,31 @@ const EmailVerificationPage = () => {
     }
   };
 
-  const handleResendEmail = () => {
-    // Implement logic to resend verification email
-    // This could involve sending another request to your backend to resend the email
+  const handleResendEmail = async () => {
+    if (cooldown > 0) {
+      // If cooldown is active, do nothing
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await EmailVerificationService.resendVerifictionLink(
+        searchParams.get("token") as string
+      );
+      Notification.info("Verification email resent successfully");
+      setCooldown(TWENTY_SECONDS);
+      const interval = setInterval(() => {
+        setCooldown((prev) => Math.max(0, prev - 1));
+      }, 1000);
+
+      setTimeout(() => {
+        clearInterval(interval);
+      }, TWENTY_SECONDS_IN_MS);
+    } catch (e) {
+      // Handle error
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,8 +105,16 @@ const EmailVerificationPage = () => {
           <Typography variant="h4" style={{ marginBottom: 10 }}>
             Verification link expired
           </Typography>
-          <Button color="primary" variant="text" onClick={handleResendEmail}>
-            Resend Verification Link
+          <Button
+            color="primary"
+            variant="text"
+            loading={loading}
+            onClick={handleResendEmail}
+            disabled={cooldown > 0}
+          >
+            {cooldown > 0
+              ? `Resend again in ${cooldown} seconds`
+              : "Resend Verification Link"}
           </Button>
         </>
       ) : (

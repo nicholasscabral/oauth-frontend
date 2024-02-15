@@ -56,7 +56,7 @@ export default function SignUp() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "40%",
+          width: "25%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "blue" }}>

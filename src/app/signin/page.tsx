@@ -14,6 +14,19 @@ import Button from "@/components/button";
 import { CenteredContainer } from "@/components/centeredContainer/styles";
 import { SignInDto } from "@/common/dtos/signin";
 import { useSearchParams } from "next/navigation";
+import {
+  FacebookLoginButton,
+  GithubLoginButton,
+  GoogleLoginButton,
+  MicrosoftLoginButton,
+} from "react-social-login-buttons";
+
+enum OauthProviders {
+  google = "google",
+  github = "github",
+  microsoft = "microsoft",
+  facebook = "facebook",
+}
 
 export default function SignIn() {
   const searchParams = useSearchParams();
@@ -22,10 +35,19 @@ export default function SignIn() {
     email: searchParams.get("email") || "",
     password: searchParams.get("password") || "",
   });
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSignin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setInterval(() => setLoading(false), 2000);
+  };
+
+  const handleOauthSignin = async (provider: keyof typeof OauthProviders) => {
+    window.open(
+      `http://localhost:4000/api/v1/auth/${provider}`,
+      "_self"
+      // "popup=true"
+    );
   };
 
   const handleInputChange = (e: any) =>
@@ -48,7 +70,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSignin} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -82,10 +104,48 @@ export default function SignIn() {
             fullWidth
             variant="contained"
             loading={loading}
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 2, mb: 2 }}
           >
-            Sign In
+            Continue with email
           </Button>
+
+          <Typography align="center" variant="subtitle1">
+            OR
+          </Typography>
+
+          <Grid container width="100%" sx={{ mb: 2, mt: 2 }}>
+            <GoogleLoginButton
+              text="Continue with Google"
+              onClick={() => handleOauthSignin("google")}
+            />
+            <GithubLoginButton
+              text="Continue with Github"
+              onClick={() => handleOauthSignin("github")}
+            />
+            <MicrosoftLoginButton
+              text="Continue with Microsoft"
+              onClick={() => handleOauthSignin("microsoft")}
+            />
+            <FacebookLoginButton
+              text="Continue with Facebook"
+              onClick={() => handleOauthSignin("facebook")}
+            />
+          </Grid>
+
+          {/* <Grid
+            container
+            alignItems="center"
+            justifyContent="center"
+            gap={7}
+            width="100%"
+            sx={{ mb: 3, mt: 2 }}
+          >
+            <SocialIcon network="google" />
+            <SocialIcon network="github" />
+            <SocialIcon network="facebook" />
+            <SocialIcon network="spotify" />
+          </Grid> */}
+
           <Grid container>
             <Grid item xs>
               <Link href="/reset-password" variant="body2">
