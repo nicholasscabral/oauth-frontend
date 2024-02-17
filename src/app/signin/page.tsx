@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,17 +10,21 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useSearchParams } from "next/navigation";
 import Button from "@/components/button";
 import { CenteredContainer } from "@/components/centeredContainer/styles";
 import { SignInDto } from "@/common/dtos/signin";
-import { useSearchParams } from "next/navigation";
 import {
   FacebookLoginButton,
   GithubLoginButton,
   GoogleLoginButton,
   MicrosoftLoginButton,
 } from "react-social-login-buttons";
+import { AuthService } from "@/services/auth";
 
 enum OauthProviders {
   google = "google",
@@ -31,15 +36,22 @@ enum OauthProviders {
 export default function SignIn() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState<SignInDto>({
     email: searchParams.get("email") || "",
     password: searchParams.get("password") || "",
   });
 
-  const handleSignin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    setInterval(() => setLoading(false), 2000);
+    window.open("http://localhost:3000/protected", "_self");
+    try {
+      await AuthService.signin(data);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOauthSignin = async (provider: keyof typeof OauthProviders) => {
@@ -89,11 +101,23 @@ export default function SignIn() {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             value={data.password}
             autoComplete="current-password"
             onChange={handleInputChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -104,6 +128,7 @@ export default function SignIn() {
             fullWidth
             variant="contained"
             loading={loading}
+            onClick={handleSignin}
             sx={{ mt: 2, mb: 2 }}
           >
             Continue with email
@@ -131,20 +156,6 @@ export default function SignIn() {
               onClick={() => handleOauthSignin("facebook")}
             />
           </Grid>
-
-          {/* <Grid
-            container
-            alignItems="center"
-            justifyContent="center"
-            gap={7}
-            width="100%"
-            sx={{ mb: 3, mt: 2 }}
-          >
-            <SocialIcon network="google" />
-            <SocialIcon network="github" />
-            <SocialIcon network="facebook" />
-            <SocialIcon network="spotify" />
-          </Grid> */}
 
           <Grid container>
             <Grid item xs>
