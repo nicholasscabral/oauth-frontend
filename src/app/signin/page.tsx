@@ -73,7 +73,7 @@ export default function SignIn() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "25%",
+          width: "40%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "blue" }}>
