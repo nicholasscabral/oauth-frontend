@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmailVerificationPage = () => {
+const AccountVerificationPage = () => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
   const hasError = searchParams.get("error");
@@ -110,4 +110,4 @@ const EmailVerificationPage = () => {
   );
 };
 
-export default EmailVerificationPage;
+export default AccountVerificationPage;
